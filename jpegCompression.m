@@ -1,4 +1,4 @@
-function [ Ioutput ] = jpegCompression( Iinput, quality )
+function [ output ] = jpegCompression( Iinput, quality )
 %-----------------------------------------------------------
 % RGB- YCBCR CONVERSION
 %-----------------------------------------------------------
@@ -67,9 +67,9 @@ zigzagedCR=zigzag(quantizedCR);
 %-----------------------------------------------------------
 % Zero-Run-Length Encoding
 %-----------------------------------------------------------
-[dY,cY]=runenc(zigzagedY');
-[dB,cB]=runenc(zigzagedCB');
-[dR,cR]=runenc(zigzagedCR');
+[dY,cY]=rl_enc(zigzagedY');
+[dB,cB]=rl_enc(zigzagedCB');
+[dR,cR]=rl_enc(zigzagedCR');
 %-----------------------------------------------------------
 % Zero-Run-Length Decoding
 %-----------------------------------------------------------
@@ -100,10 +100,13 @@ Y1 = blockproc(iquantizedY, [8 8], fun);
 cb1 = blockproc(iquantizedCB, [8 8], fun);
 cr1 = blockproc(iquantizedCR, [8 8], fun);
 %-----------------------------------------------------------
-
-Ioutput(:,:,1)=Y1;
-Ioutput(:,:,2)=cb1;
-Ioutput(:,:,3)=cr1;
+% YCBCR- RGB CONVERSION
+%-----------------------------------------------------------
+output(:,:,1)=Y1;
+output(:,:,2)=cb1;
+output(:,:,3)=cr1;
+output=uint8(output);
+output=ycbcr2rgb(output);
 
 end
 
